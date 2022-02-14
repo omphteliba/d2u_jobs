@@ -88,6 +88,7 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 					?>
 				</div>
 			</fieldset>
+
 			<fieldset>
 				<legend><small><i class="rex-icon fa-google"></i></small> <?php echo rex_i18n::msg('d2u_jobs_settings_google'); ?></legend>
 				<div class="panel-body-wrapper slide">
@@ -146,6 +147,55 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
 			<?php
 				}
 			?>
+            <?php
+            if(rex_plugin::get('d2u_jobs', 'personio_import')->isAvailable()) {
+                ?>
+                <fieldset>
+                    <legend><small><i class="rex-icon fa-cloud-download"></i></small> <?php echo rex_i18n::msg('d2u_jobs_personio'); ?></legend>
+                    <div class="panel-body-wrapper slide">
+                        <?php
+                        // Default language for import
+                        if(count(rex_clang::getAll()) > 1) {
+                            $lang_options = [];
+                            foreach(rex_clang::getAll() as $rex_clang) {
+                                $lang_options[$rex_clang->getId()] = $rex_clang->getName();
+                            }
+                            d2u_addon_backend_helper::form_select('d2u_jobs_personio_settings_default_lang', 'settings[personio_default_lang]', $lang_options, [$this->getConfig('personio_default_lang')]);
+                        }
+                        d2u_addon_backend_helper::form_input('d2u_jobs_personio_settings_hr4you_xml_url', 'settings[personio_xml_url]', $this->getConfig('personio_xml_url'), FALSE, FALSE);
+                        ?>
+                        <dl class="rex-form-group form-group" id="settings[personio_media_category]">
+                            <dt><label><?php echo rex_i18n::msg('d2u_jobs_personio_settings_hr4you_media_category'); ?></label></dt>
+                            <dd>
+                                <?php
+                                $media_category = new rex_media_category_select(FALSE);
+                                $media_category->addOption(rex_i18n::msg('pool_kats_no'), 0);
+                                $media_category->get();
+                                $media_category->setSelected($this->getConfig('personio_media_category'));
+                                $media_category->setName('settings[personio_media_category]');
+                                $media_category->setAttribute('class', 'form-control');
+                                $media_category->show();
+                                ?>
+                            </dd>
+                        </dl>
+                        <?php
+                        $job_category_options = [];
+                        foreach(D2U_Jobs\Category::getAll(rex_config::get('d2u_helper', 'default_lang'), FALSE) as $job_category) {
+                            $job_category_options[$job_category->category_id] = $job_category->name;
+                        }
+                        d2u_addon_backend_helper::form_select('d2u_jobs_personio_settings_personio_default_category', 'settings[personio_default_category]', $job_category_options, [$this->getConfig('personio_default_category')]);
+                        $job_headline_options = [];
+                        for($i = 1; $i <= 6; $i++) {
+                            $job_headline_options['h'. $i] = htmlspecialchars('Überschrift <h'. $i .'>');
+                        }
+                        d2u_addon_backend_helper::form_select('d2u_jobs_personio_settings_headline_tag', 'settings[personio_headline_tag]', $job_headline_options, [$this->getConfig('personio_headline_tag')]);
+                        d2u_addon_backend_helper::form_checkbox('d2u_jobs_personio_settings_personio_autoimport', 'settings[personio_autoimport]', 'active', $this->getConfig('personio_autoimport') == 'active');
+                        ?>
+                    </div>
+                </fieldset>
+                <?php
+            }
+            ?>
 		</div>
 		<footer class="panel-footer">
 			<div class="rex-form-panel-footer">
