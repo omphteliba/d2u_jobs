@@ -162,10 +162,10 @@ if (filter_input(INPUT_POST, "btn_save") == 'save') {
                             }
                             d2u_addon_backend_helper::form_select('d2u_jobs_personio_settings_default_lang', 'settings[personio_default_lang]', $lang_options, [$this->getConfig('personio_default_lang')]);
                         }
-                        d2u_addon_backend_helper::form_input('d2u_jobs_personio_settings_hr4you_xml_url', 'settings[personio_xml_url]', $this->getConfig('personio_xml_url'), FALSE, FALSE);
+                        d2u_addon_backend_helper::form_input('d2u_jobs_personio_settings_personio_xml_url', 'settings[personio_xml_url]', $this->getConfig('personio_xml_url'), FALSE, FALSE);
                         ?>
                         <dl class="rex-form-group form-group" id="settings[personio_media_category]">
-                            <dt><label><?php echo rex_i18n::msg('d2u_jobs_personio_settings_hr4you_media_category'); ?></label></dt>
+                            <dt><label><?php echo rex_i18n::msg('d2u_jobs_personio_settings_personio_media_category'); ?></label></dt>
                             <dd>
                                 <?php
                                 $media_category = new rex_media_category_select(FALSE);

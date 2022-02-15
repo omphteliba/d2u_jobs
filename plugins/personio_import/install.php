@@ -1,31 +1,40 @@
 <?php
 $sql = rex_sql::factory();
 
-$sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_jobs_jobs LIKE 'personio_job_id';");
-if($sql->getRows() == 0) {
-	$sql->setQuery('ALTER TABLE `'. rex::getTablePrefix() . 'd2u_jobs_jobs` ADD `personio_job_id` int(10) default NULL;');
+$sql->setQuery("SHOW COLUMNS FROM " . \rex::getTablePrefix() . "d2u_jobs_jobs LIKE 'personio_job_id';");
+if ($sql->getRows() === 0) {
+    $sql->setQuery('ALTER TABLE `' . rex::getTablePrefix() . 'd2u_jobs_jobs` ADD `personio_job_id` int(10) default NULL;');
 }
-$sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_jobs_jobs LIKE 'personio_url_application_form';");
-if($sql->getRows() == 0) {
-	$sql->setQuery('ALTER TABLE `'. rex::getTablePrefix() . 'd2u_jobs_jobs` ADD `personio_url_application_form` varchar(255) default NULL;');
+$sql->setQuery("SHOW COLUMNS FROM " . \rex::getTablePrefix() . "d2u_jobs_jobs LIKE 'personio_url_application_form';");
+if ($sql->getRows() === 0) {
+    $sql->setQuery('ALTER TABLE `' . rex::getTablePrefix() . 'd2u_jobs_jobs` ADD `personio_url_application_form` varchar(255) default NULL;');
 }
-$sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_jobs_jobs_lang LIKE 'personio_lead_in';");
-if($sql->getRows() == 0) {
-	$sql->setQuery('ALTER TABLE `'. rex::getTablePrefix() . 'd2u_jobs_jobs_lang` ADD `personio_lead_in` varchar(255) default NULL;');
+$sql->setQuery("SHOW COLUMNS FROM " . \rex::getTablePrefix() . "d2u_jobs_jobs_lang LIKE 'personio_lead_in';");
+if ($sql->getRows() === 0) {
+    $sql->setQuery('ALTER TABLE `' . rex::getTablePrefix() . 'd2u_jobs_jobs_lang` ADD `personio_lead_in` varchar(255) default NULL;');
 }
-$sql->setQuery("SHOW COLUMNS FROM ". \rex::getTablePrefix() ."d2u_jobs_categories LIKE 'personio_category_id';");
-if($sql->getRows() == 0) {
-	$sql->setQuery('ALTER TABLE `'. rex::getTablePrefix() . 'd2u_jobs_categories` ADD `personio_category_id` int(10) default NULL;');
+$sql->setQuery("SHOW COLUMNS FROM " . \rex::getTablePrefix() . "d2u_jobs_categories LIKE 'personio_category_id';");
+if ($sql->getRows() === 0) {
+    $sql->setQuery('ALTER TABLE `' . rex::getTablePrefix() . 'd2u_jobs_categories` ADD `personio_category_id` int(10) default NULL;');
 }
 
+// Create new table for descriptions
+rex_sql_table::get(rex::getTable('d2u_jobs_personio_jobdescriptions'))
+    ->ensureColumn(new rex_sql_column('id', 'int(11)', false, null, 'auto_increment'))
+    ->ensureColumn(new rex_sql_column('personio_id', 'int(11)'))
+    ->ensureColumn(new rex_sql_column('name', 'text'))
+    ->ensureColumn(new rex_sql_column('description', 'text'))
+    ->setPrimaryKey('id')
+    ->ensure();
+
 // Insert frontend translations
-if(class_exists('d2u_jobs_personio_lang_helper')) {
-	d2u_jobs_personio_lang_helper::factory()->install();
+if (class_exists('d2u_jobs_personio_lang_helper')) {
+    d2u_jobs_personio_lang_helper::factory()->install();
 }
 
 if (!rex_config::has('d2u_jobs', 'personio_default_lang')) {
-	rex_config::set('d2u_jobs', 'personio_default_lang', rex_clang::getStartId());
+    rex_config::set('d2u_jobs', 'personio_default_lang', rex_clang::getStartId());
 }
 if (!rex_config::has('d2u_jobs', 'personio_headline_tag')) {
-	rex_config::set('d2u_jobs', 'personio_headline_tag', 'h3');
+    rex_config::set('d2u_jobs', 'personio_headline_tag', 'h3');
 }
